@@ -28,10 +28,10 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        'patterns': [{ 'regex': '^@mui/[^/]+$' }]
+        'patterns': ['@mui/*/*/*']
       }
     ],
-    
+
     //COMMOM
     'no-console': 1,
     'no-lonely-if': 1,
