@@ -7,7 +7,4 @@ function App() {
       {/* { Board Detail } */}
       <Board />
     </>
-  )
-}
-
 export default App
