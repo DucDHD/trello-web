@@ -82,7 +82,7 @@ function AppBar() {
               />
             )
           }}
-          sx={{ 
+          sx={{
             minWidth: '120px',
             maxWidth: '180px',
             '& label': { color: 'white' },

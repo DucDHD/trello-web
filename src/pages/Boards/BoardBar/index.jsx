@@ -18,7 +18,7 @@ const MENU_STYPE = {
   border: 'none',
   paddingX: '5px',
   borderRadius: '4px',
-  '&.MuiSvgIcon-root': {
+  '& .MuiSvgIcon-root': {
     color: 'white'
   },
   '&:hover': {
@@ -98,7 +98,10 @@ function BoardBar() {
               width: 34,
               height: 34,
               fontSize: 16,
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a4b0be' }
             }
           }}>
           <Tooltip title="DucDH-Dev">
