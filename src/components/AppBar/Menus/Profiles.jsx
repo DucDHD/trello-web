@@ -33,7 +33,7 @@ function Profile() {
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar
-            sx={{ width: 30, height: 30 }}
+            sx={{ width: 36, height: 36 }}
             alt="DucDH"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRurFbmJlO1wxuvxeLHTBxLNF8F9NxjeuYqjQ&s"
           />
