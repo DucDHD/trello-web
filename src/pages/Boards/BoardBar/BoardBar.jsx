@@ -10,6 +10,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import { Tooltip } from '@mui/material'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { capitalizeFirstLetter } from '~/utils/formatters'
 
 
 const MENU_STYPE = {
@@ -26,7 +27,8 @@ const MENU_STYPE = {
   }
 }
 
-function BoardBar() {
+function BoardBar({ board }) {
+  //const { board } = props
   return (
     <Box sx={{
       width: '100%',
@@ -43,14 +45,14 @@ function BoardBar() {
         <Chip
           sx ={MENU_STYPE}
           icon={<DashboardIcon />}
-          label="Learning Reactjs + Nodejs"
+          label={board?.title}
           //clickable
           onClick={ () => {} }
         />
         <Chip
           sx ={MENU_STYPE}
           icon={<VpnLockIcon />}
-          label="Public/Private Workspace"
+          label={capitalizeFirstLetter(board?.type)}
           //clickable
           onClick={ () => {} }
         />

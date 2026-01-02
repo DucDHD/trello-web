@@ -18,16 +18,22 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import theme from '~/theme'
 import ListCards from './ListCards/ListCards'
+import { mapOrder } from '~/utils/sorts'
 
 const APP_BAR_HEIGHT = '58px'
 const BOARD_BAR_HEIGHT = '60px'
 const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`
+const COLUMN_HEADER_HEIGHT = '50px'
+const COLUMN_FOOTER_HEIGHT = '56px'
 
-function Colunm() {
+
+function Colunm( { column } ) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
   return (
     <Box sx={{
       minWidth: '300px',
@@ -40,7 +46,7 @@ function Colunm() {
     }}>
       {/* {Box colunm header} */}
       <Box sx={{
-        height: (theme) => theme.trello.columnHeaderHeight,
+        height: COLUMN_HEADER_HEIGHT,
         p: 2,
         display: 'flex',
         alignItems: 'center',
@@ -53,7 +59,7 @@ function Colunm() {
             cursor: 'pointer'
           }}
         >
-            Column Title
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title="More options" >
@@ -104,10 +110,10 @@ function Colunm() {
         </Box>
       </Box>
       {/* {Box colunm list Card} */}
-      <ListCards />
+      <ListCards cards={orderedCards} />
       {/* {Box colunm list Footer} */}
       <Box sx={{
-        height: (theme) => theme.trello.columnFooterHeight,
+        height: COLUMN_FOOTER_HEIGHT,
         p:2,
         display: 'flex',
         alignItems: 'center',
