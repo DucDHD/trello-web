@@ -9,7 +9,8 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
-  defaultDropAnimationSideEffects
+  defaultDropAnimationSideEffects,
+  closestCorners
 
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -170,7 +171,11 @@ function BoardContent({ board }) {
 
   return (
     <DndContext
+      // cảm biến (video 30)
       sensors={sensors}
+      // Thuật toán phát hiện va chạm (nếu không có nó thì card với cover lớn sẽ không kéo qua column được vì lúc này)
+      // Nó đang bị conflict giữa card và column), chúng ta sẽ dùng clossetCorners thay vì clossetCenter (video 34)
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
