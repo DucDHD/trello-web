@@ -46,7 +46,7 @@ const theme = extendTheme({
         root: {
           fontSize: '0.875rem',
           '& fieldset': { borderWidth: '0.5px !important' },
-          '&:hover fieldset': { borderWidth: '1px !important' },
+          '&:hover fieldset': { borderWidth: '1px !important' }
 
         }
       }

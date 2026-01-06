@@ -9,3 +9,20 @@ export const capitalizeFirstLetter = (val) => {
   if (!val) return ''
   return `${val.charAt(0).toUpperCase()}${val.slice(1)}`
 }
+/**
+ * Video 37.2 : Cách xử lý bug logic thư viện Dnd-kit khi column là rỗng.
+ * Phía FE sẽ tự tạo ra một cái card đặc biệt: placeholder Card, không liên quan đến back-end
+ * Card đặc biệt này sẽ được ẩn ở giao diện Ui người dùng.
+ * Cấu trúc Id của cái card này để Unique rất đơn giản, không cần phải làm romdom phức tạp:
+ * "columnId-placeholder-card" ( Mỗi column chỉ có thể có tối đa một cái placeholder Card )
+ * Quan trọng khi tạo: phải đầy đủ: ( _id, boardId, columnId, FE_placeholderCard )
+ * Kỹ hơn nữa về cách tạo chuẩn ở bước nào thì sẽ ở học phần tích hợp API Back-End vào dự án.
+*/
+export const generatePlaceHolderCard = (column) => {
+  return {
+    _id:  `${column._id}-placeholder-card`,
+    boardId: column.boardId,
+    columnId: column._id,
+    FE_placeholderCard: true
+  }
+}
