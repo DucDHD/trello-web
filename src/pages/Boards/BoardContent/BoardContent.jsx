@@ -3,7 +3,7 @@ import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
 import {
   DndContext,
-  PointerSensor,
+  // PointerSensor,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -11,9 +11,9 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects,
   closestCorners,
-  closestCenter,
+  // closestCenter,
   pointerWithin,
-  rectIntersection,
+  // rectIntersection,
   getFirstCollision
 
 } from '@dnd-kit/core'
@@ -276,28 +276,31 @@ function BoardContent({ board }) {
     }
     // Tìm các điểm giao nhau, va chạm Intersections với con trỏ
     const pointerIntersections = pointerWithin(args)
+
+    // video 37.1 : Nếu pointerIntersections là mảng rỗng, return luông không làm gì.
+    // Fix triệt để cái bug flickering của thư viện Dnd-kit trong trường hợp sau:
+    // - Kéo thả một cái card có Image cover lớn và kéo lên phía trên cùng ra khỏi khu vực kéo thả
+    if ( !pointerIntersections?.length) return
     // Thuận toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây
-    const intersections = !!pointerIntersections?.length
-      ? pointerIntersections
-      : rectIntersection(args)
+    // const intersections = !!pointerIntersections?.length
+    //   ? pointerIntersections
+    //   : rectIntersection(args)
 
     // Tìm overId đầu tiền của đám intersections ở trên
-    let overId = getFirstCollision(intersections, 'id')
+    let overId = getFirstCollision(pointerIntersections, 'id')
     if (overId) {
       // Video 37: đoạn này để fix cái vụ flickering nhé.
       // Nếu cái over nó là column thì sẽ tím tới cái cardId gần nhất bên trong khu vực va chạm đó dựa vào
-      // Thuật toán phát hiện va chạm closestCenter hoặc closestCorners đều được. Tuy nhiên ở đây dùng closestCenter thì mượt mà hơn
+      // Thuật toán phát hiện va chạm closestCenter hoặc closestCorners đều được. Tuy nhiên ở đây dùng closestCorners thì mượt mà hơn
 
       const checkColumn = orderedColumns.find( column => column._id === overId)
       if ( checkColumn ) {
-        console.log(' before overId', overId)
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(container => {
             return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id) )
           })
         })[0]?.id
-        console.log(' after overId', overId)
       }
 
       lastOverId.current = overId
