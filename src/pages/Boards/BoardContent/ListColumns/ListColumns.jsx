@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import Colunm from './Column/Colunm'
 import Button from '@mui/material/Button'
@@ -17,7 +18,7 @@ function ListColumns({ columns }) {
 
   const addNewColumn = () => {
     if (!newColumnTitle) {
-      // console.error('please enter column title')
+      toast.error('please enter column Title')
       return
     }
     //console.log(newColumnTitle)
@@ -81,7 +82,6 @@ function ListColumns({ columns }) {
               size="small"
               variant='outlined'
               autoFocus
-              data-no-dnd="True"
               value={newColumnTitle}
               onChange={ (e) => setNewColumnTitle(e.target.value) }
               sx={{
@@ -97,7 +97,6 @@ function ListColumns({ columns }) {
             />
             <Box sx={{ display: 'flex', alignItems:'center', gap:1 }} >
               <Button
-                
                 onClick={addNewColumn}
                 variant='contained'color='success' size='small'
                 sx={{
