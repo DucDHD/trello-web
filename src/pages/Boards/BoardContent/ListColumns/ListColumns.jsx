@@ -81,6 +81,7 @@ function ListColumns({ columns }) {
               size="small"
               variant='outlined'
               autoFocus
+              data-no-dnd="True"
               value={newColumnTitle}
               onChange={ (e) => setNewColumnTitle(e.target.value) }
               sx={{
@@ -96,6 +97,7 @@ function ListColumns({ columns }) {
             />
             <Box sx={{ display: 'flex', alignItems:'center', gap:1 }} >
               <Button
+                
                 onClick={addNewColumn}
                 variant='contained'color='success' size='small'
                 sx={{
@@ -107,7 +109,7 @@ function ListColumns({ columns }) {
               >Add Column</Button>
               <CloseIcon
                 fontSize='small'
-                sx={{ 
+                sx={{
                   color: 'white',
                   cursor: 'pointer',
                   '&:hover': { bgcolor: (theme) => theme.palette.warning.light }
