@@ -42,13 +42,15 @@ function BoardBar({ board }) {
       bgcolor: (theme) => (theme.palette.mode === 'dark' ?'#34495e' : '#1976d2' )
     }}>
       <Box sx={{ display: ' flex', alignItems: 'center', gap: 2 }}>
-        <Chip
-          sx ={MENU_STYPE}
-          icon={<DashboardIcon />}
-          label={board?.title}
-          //clickable
-          onClick={ () => {} }
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            sx ={MENU_STYPE}
+            icon={<DashboardIcon />}
+            label={board?.title}
+            //clickable
+            onClick={ () => {} }
+          />
+        </Tooltip>
         <Chip
           sx ={MENU_STYPE}
           icon={<VpnLockIcon />}
