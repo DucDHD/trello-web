@@ -9,21 +9,31 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
 
   const [openNewColumnFrom, setOpenNewColumnFrom] = useState(false)
   const toggleOpenNewColumnFrom = () => setOpenNewColumnFrom(!openNewColumnFrom)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('please enter column Title')
       return
     }
-    //console.log(newColumnTitle)
 
-    // Gọi API...
+    // Tạo dữ liệu column để gọi API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+    /**
+     * Gọi props function createNewColumn nằm ở component cha cao nhất (board/ _id.jsx)
+     * Lưu ý: Về sau ở học phần MERN stack Advence nâng cao học trực tiếp mình với mình thì chúng ta đưa dữ liệu Board ra ngoài Redux Global Store
+     * Và lúc này chúng ta có thể gọi luôn API ở đây là xong thày vì phải lần lượt gọi ngược lên cũng component cha phía trên.
+     * (Đối với component càng sâu thì càng khổ)
+     * - Với việc sử dụng redux như vậy thì code sẽ clean chuẩn chỉnh hơn rất nhiều.
+     */
+    await createNewColumn(newColumnData)
 
     // Đóng lại trạng thái thêm column mới và clear Input
     toggleOpenNewColumnFrom()
@@ -40,7 +50,7 @@ function ListColumns({ columns }) {
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track': { m :2 }
       }}>
-        {columns?.map(column => <Colunm key={column._id} column={column} />)}
+        {columns?.map(column => <Colunm key={column._id} column={column} createNewCard={createNewCard} />)}
         {/* { Add New Column } */}
         {!openNewColumnFrom
           ? <Box onClick={toggleOpenNewColumnFrom} sx={{
