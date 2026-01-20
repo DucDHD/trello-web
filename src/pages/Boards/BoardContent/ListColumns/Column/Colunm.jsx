@@ -33,7 +33,7 @@ const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '56px'
 
 
-function Colunm( { column } ) {
+function Colunm( { column, createNewCard } ) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -60,16 +60,27 @@ function Colunm( { column } ) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please Enter Card Title', {
         position: 'bottom-right'
       })
       return
     }
-    //console.log(newCardTitle)
 
-    // Gọi API...
+    // Tạo dữ liệu card để gọi API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+    /**
+     * Gọi props function createNewColumn nằm ở component cha cao nhất (board/ _id.jsx)
+     * Lưu ý: Về sau ở học phần MERN stack Advence nâng cao học trực tiếp mình với mình thì chúng ta đưa dữ liệu Board ra ngoài Redux Global Store
+     * Và lúc này chúng ta có thể gọi luôn API ở đây là xong thày vì phải lần lượt gọi ngược lên cũng component cha phía trên.
+     * (Đối với component càng sâu thì càng khổ)
+     * - Với việc sử dụng redux như vậy thì code sẽ clean chuẩn chỉnh hơn rất nhiều.
+     */
+    await createNewCard(newCardData)
 
     // Đóng lại trạng thái thêm column mới và clear Input
     toggleOpenNewcardFrom()

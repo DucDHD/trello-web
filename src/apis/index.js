@@ -8,9 +8,25 @@ import { API_ROOT } from '~/utils/constants'
  * Giải pháp Clean code gọn gàng đó là chúng ta sẽ catch lỗi tập trung một nơi bằng cách tận dụng một thứ cực kỳ mạnh mẽ trong axios đó là Intercreptors
  * Hiểu đơn giản Intercreptors là cách chúng ta sẽ đánh chặn vào giữa request hoặc reponse để xủ lý logic mà chúng ta muốn.
  */
+
+/** Board */
 export const fetchBoardDetailsAPI = async (boardId) => {
   const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
 
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
+  return response.data
+}
+
+/** Columns */
+
+export const createNewColumnAPI = async (newColumnData) => {
+  const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData)
+  return response.data
+}
+
+/** Card */
+
+export const createNewCardAPI = async (newCardData) => {
+  const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData)
   return response.data
 }
