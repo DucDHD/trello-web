@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sorts'
 import {
   DndContext,
   // PointerSensor,
@@ -35,7 +34,7 @@ const ACTIVE_DRAG_ITEM_STYLE = {
   CARD : 'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) {
 
   //const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   // yêu cầu chuộc di chuyển 10px thì mới kích hoạt event, fix trường hợp click bị gọi event
@@ -58,7 +57,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   const lastOverId = useRef(null)
 
   useEffect (() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    // Columns đã được sắp xếp ở component cha cao nhất
+    setOrderedColumns(board.columns)
   }, [board])
 
 
@@ -225,10 +225,11 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         const oldCardIndex = oldColumnWhenDraggingCard?.cards.findIndex( c => c._id === activeDragItemId )
         // lấy vị trí mới (từ thằng overColumn)
         const newCardIndex = overColumn?.cards.findIndex( c => c._id === overCardId )
-
         // Dùng  arrayMove vì chúng ta kéo card trong một cái column thì tương tự với logic kéo column trong một cái board content
         const dndOrderedCard = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndOrderedCard.map( card => card._id )
 
+        // Vận gọi update state ở đây để tránh delay hoặc Flickering giao diện lúc kéo thả cần phải chờ gọi API
         setOrderedColumns(prevColumns => {
           // Clone mảng orderedColumnsState cũ ra một cái mới để xử lý data rồi return - cập nhập lại orderedColumnsState mới
           const nextColumns = cloneDeep(prevColumns)
@@ -237,11 +238,18 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
           const targerColumn = nextColumns.find( column => column._id === overColumn._id )
           // Cập nhập lại 2 giá trị mới là card và cardOrderIds trong cái targetColumn
           targerColumn.cards = dndOrderedCard
-          targerColumn.cardOrderIds = dndOrderedCard.map( card => card._id )
-
+          targerColumn.cardOrderIds = dndOrderedCardIds
           // Trả về giá trị state mới chuẩn vị trí
           return nextColumns
         })
+        /**
+         * Gọi lên props function moveCardInTheSameColumn nằm ở component cha cao nhất (board/_id.jsx)
+         * Lưu ý: về sau ở học phần MERN stack Advance nâng cao thì chúng ta sẽ đưa dữ liệu board ra ngoài Redux Global Store
+         * Và lúc này chúng ta có thể gọi API ở đây là xong thay vì phải lần lượt gọi ngược lên những component cha phía bên trên
+         * (Đối với component con nằm sâu thì càng khổ :D)
+         * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều
+         */
+        moveCardInTheSameColumn(dndOrderedCard, dndOrderedCardIds, oldColumnWhenDraggingCard._id)
       }
 
     }
@@ -257,6 +265,9 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         // Dùng  arrayMove của thằng dnd-kit để sắp xếp lại lại columns ban đầu
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
+        // Cập nhập lại state columns ban đầu sau khi đã kéo thả
+        setOrderedColumns(dndOrderedColumns)
+
         /**
          * Gọi lên props function moveColumns nằm ở component cha cao nhất (board/_id.jsx)
          * Lưu ý: về sau ở học phần MERN stack Advance nâng cao thì chúng ta sẽ đưa dữ liệu board ra ngoài Redux Global Store
@@ -265,9 +276,6 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
          * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều
          */
         moveColumns(dndOrderedColumns)
-
-        // Cập nhập lại state columns ban đầu sau khi đã kéo thả
-        setOrderedColumns(dndOrderedColumns)
       }
     }
 
