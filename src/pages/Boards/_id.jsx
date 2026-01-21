@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
@@ -87,8 +88,15 @@ function Board( ) {
     const newBoard = { ...board }
     const columnnToUpdate = newBoard.columns.find( column => column._id === createdCard.columnId )
     if (columnnToUpdate) {
-      columnnToUpdate.cards.push(createdCard)
-      columnnToUpdate.cardOrderIds.push(createdCard._id)
+      // Nếu column rỗng : bản chất là đang chứa placeholder-card
+      if (columnnToUpdate.cards.some(card => card.FE_placeholderCard) ) {
+        columnnToUpdate.cards = [createdCard]
+        columnnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // ngược lại có data thì push vào mảng
+        columnnToUpdate.cards.push(createdCard)
+        columnnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
     setBoard(newBoard)
 
@@ -144,10 +152,13 @@ function Board( ) {
     setBoard(newBoard)
 
     // Gọi API xử lý phía BE
+    let prevCardorderIds = dndOrderedColumns.find( c => c._id === prevColumnId)?.cardOrderIds
+    // Xử lý vấn đề khi kéo card cuối cùng ra khỏi column, column sẽ có placeholder-card cần xóa nó đi trước khi gửi dữ liệu lên cho phía BE
+    if (prevCardorderIds[0].includes('placeholder-card')) prevCardorderIds = []
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
-      prevCardorderIds: dndOrderedColumns.find( c => c._id === prevColumnId)?.cardOrderIds,
+      prevCardorderIds,
       nextColumnId,
       nextCardOrderIds: dndOrderedColumns.find( c => c._id === nextColumnId)?.cardOrderIds
     })
