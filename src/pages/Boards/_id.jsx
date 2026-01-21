@@ -9,7 +9,8 @@ import {
   createNewColumnAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
 } from '~/apis'
 import { generatePlaceHolderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
@@ -99,8 +100,8 @@ function Board( ) {
    * Chỉ cần gọi API để cập nhập mảng columnOrderIds của board chứa nó (thay đổi vị trí trong mảng)
    */
   const moveColumns = (dndOrderedColumns) => {
-    const dndOrderedColumnsIds = dndOrderedColumns.map( column => column._id)
     // Update cho chuẩn dữ liệu state board
+    const dndOrderedColumnsIds = dndOrderedColumns.map( column => column._id)
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
@@ -126,6 +127,31 @@ function Board( ) {
     setBoard(newBoard)
     // Gọi API update column
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
+  }
+
+  /**
+   * Khi di chuyển Card sang Column khác
+   * B1: Cập nhập mảng cardOrderIds của column ban đầu chứa nó ( Hiểu bản chất là xóa cái _id của Card ra khỏi mảng)
+   * B2: Cập nhập mảng cardOrderIds của column tiếp theo ( Hiểu bản chất là thêm _id của card vào mảng )
+   * B3: Cập nhập lại trường columnId mới của các Card đã kéo
+   * => Làm một API support riêng
+   */
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    const dndOrderedColumnsIds = dndOrderedColumns.map( column => column._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // Gọi API xử lý phía BE
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardorderIds: dndOrderedColumns.find( c => c._id === prevColumnId)?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find( c => c._id === nextColumnId)?.cardOrderIds
+    })
+
   }
 
   if (!board) {
@@ -154,6 +180,7 @@ function Board( ) {
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   )

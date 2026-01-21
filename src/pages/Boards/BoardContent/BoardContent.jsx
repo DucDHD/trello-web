@@ -34,7 +34,14 @@ const ACTIVE_DRAG_ITEM_STYLE = {
   CARD : 'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard,
+  moveColumns,
+  moveCardInTheSameColumn,
+  moveCardToDifferentColumn
+}) {
 
   //const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   // yêu cầu chuộc di chuyển 10px thì mới kích hoạt event, fix trường hợp click bị gọi event
@@ -69,7 +76,7 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
     return orderedColumns.find(column => column?.cards?.map(card => card._id)?.includes(cardId))
 
   }
-  // Function chung xử lý Cập nhập lại state trong trường hợp di chuyển card giữa các Column khác nhau
+  // Khởi tạo Function chung xử lý Cập nhập lại state trong trường hợp di chuyển card giữa các Column khác nhau
   const moveCardBetweenDifferentColumns = (
     overColumn,
     overCardId,
@@ -77,7 +84,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
 
   ) => {
     setOrderedColumns(prevColumns => {
@@ -123,6 +131,15 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
         nextOverColunn.cards = nextOverColunn.cards.filter(card => !card.FE_placeholderCard)
         // Cập nhập lại mảng cardOrderIds cho chuẩn dữ liệu
         nextOverColunn.cardOrderIds = nextOverColunn.cards.map(card => card._id)
+      }
+      // Nếu Func này được gọi từ handleDragEnd nghĩa là đã kéo thả xong, lúc này mới xử lý gọi API 1 lần ở đây
+      if ( triggerFrom === 'handleDragEnd') {
+        moveCardToDifferentColumn(
+          activeDraggingCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColunn._id,
+          nextColumns
+        )
       }
       return nextColumns
     })
@@ -176,7 +193,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -216,7 +234,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
         // Hành động kéo thả card trong cùng một column
