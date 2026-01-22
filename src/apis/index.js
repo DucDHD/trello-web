@@ -38,11 +38,22 @@ export const createNewColumnAPI = async (newColumnData) => {
   return response.data
 }
 
+
+/** Columns updateColumnDetailsAPI */
+
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
   const response = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
   return response.data
 }
+
+/** Columns deleteColumnDetails */
+export const deleteColumnDetailsAPI = async (columnId) => {
+  const response = await axios.delete(`${API_ROOT}/v1/columns/${columnId}`)
+  // Lưu ý: axios sẽ trả về kết quả property của nó là data
+  return response.data
+}
+
 
 
 /** Card */

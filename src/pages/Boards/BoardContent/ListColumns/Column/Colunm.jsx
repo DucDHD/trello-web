@@ -23,7 +23,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
-
+import { useConfirm } from 'material-ui-confirm'
 
 const APP_BAR_HEIGHT = '58px'
 const BOARD_BAR_HEIGHT = '60px'
@@ -32,7 +32,7 @@ const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '56px'
 
 
-function Colunm( { column, createNewCard } ) {
+function Colunm( { column, createNewCard, deleteColumnDetails } ) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -86,6 +86,38 @@ function Colunm( { column, createNewCard } ) {
     setNewCardTitle('')
   }
 
+  const confirmDeleteColumn = useConfirm()
+
+  //Xóa một column và cards bên trong nó
+  const handleDeleteColumn = () => {
+    confirmDeleteColumn ({
+      title: 'Delete Column?',
+      description: 'this action will permanently delete your column and its Cards ! Are you sure?',
+      confirmationText:'Confirm',
+      cancellationText: 'Cancel'
+
+      // allowClose: false,
+      // dialogProps: { maxWidth: 'xs' },
+      // confirmationButtonProps: { color: 'secondary', variant:'outlined' },
+      // cancellationButtonProps: { color:'inherit' }
+
+
+      // confirmationKeyword: 'DucDHDev',
+      // description: 'this action will permanently delete your column and its Cards ! Are you sure?'
+    })
+    /**
+     * Gọi props function deleteColumnDetails nằm ở component cha cao nhất (board/ _id.jsx)
+     * Lưu ý: Về sau ở học phần MERN stack Advence nâng cao học trực tiếp mình với mình thì chúng ta đưa dữ liệu Board ra ngoài Redux Global Store
+     * Và lúc này chúng ta có thể gọi luôn API ở đây là xong thày vì phải lần lượt gọi ngược lên cũng component cha phía trên.
+     * (Đối với component càng sâu thì càng khổ)
+     * - Với việc sử dụng redux như vậy thì code sẽ clean chuẩn chỉnh hơn rất nhiều.
+     */
+      .then(() => {
+        deleteColumnDetails(column._id)
+      })
+      .catch( () => { } )
+  }
+
   return (
     // Phải bọc div ở đây vì vấn để chiều cao của column khi kéo thả sẽ có bug kiểu kiểu flickering (demo video 32)
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes} >
@@ -132,12 +164,21 @@ function Colunm( { column, createNewCard } ) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-colunm-dropdown'
               }}
             >
-              <MenuItem>
-                <ListItemIcon> <AddCardIcon fontSize="small" /></ListItemIcon>
+              <MenuItem
+                onClick={toggleOpenNewcardFrom}
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': { color: 'success.light' }
+                  }
+                }}
+              >
+                <ListItemIcon> <AddCardIcon className="add-card-icon" fontSize="small" /></ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
               <MenuItem>
@@ -153,9 +194,17 @@ function Colunm( { column, createNewCard } ) {
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem>
-                <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  '&:hover': {
+                    color: 'warning.dark',
+                    '& .delete-forever-icon': { color: 'warning.dark' }
+                  }
+                }}
+              >
+                <ListItemIcon><DeleteForeverIcon className ='delete-forever-icon' fontSize="small" /></ListItemIcon>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
               <MenuItem>
                 <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
