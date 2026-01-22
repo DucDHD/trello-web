@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 
 
-function ListColumns({ columns, createNewColumn, createNewCard }) {
+function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
 
   const [openNewColumnFrom, setOpenNewColumnFrom] = useState(false)
   const toggleOpenNewColumnFrom = () => setOpenNewColumnFrom(!openNewColumnFrom)
@@ -50,7 +50,12 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track': { m :2 }
       }}>
-        {columns?.map(column => <Colunm key={column._id} column={column} createNewCard={createNewCard} />)}
+        {columns?.map(column => <Colunm
+          key={column._id}
+          column={column}
+          createNewCard={createNewCard}
+          deleteColumnDetails={deleteColumnDetails}
+        />)}
         {/* { Add New Column } */}
         {!openNewColumnFrom
           ? <Box onClick={toggleOpenNewColumnFrom} sx={{
