@@ -55,7 +55,6 @@ export const deleteColumnDetailsAPI = async (columnId) => {
 }
 
 
-
 /** Card */
 
 export const createNewCardAPI = async (newCardData) => {
