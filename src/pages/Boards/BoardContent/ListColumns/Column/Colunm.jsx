@@ -108,7 +108,6 @@ function Colunm( { column } ) {
         columnnToUpdate.cardOrderIds.push(createdCard._id)
       }
     }
-    console.log('🚀 ~ addNewCard ~ columnnToUpdate:', columnnToUpdate)
     //setBoard(newBoard)
     dispatch(updateCurrentActiveBoard(newBoard))
 
