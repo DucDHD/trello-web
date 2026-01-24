@@ -9,12 +9,12 @@ import { API_ROOT } from '~/utils/constants'
  * Hiểu đơn giản Intercreptors là cách chúng ta sẽ đánh chặn vào giữa request hoặc reponse để xủ lý logic mà chúng ta muốn.
  */
 
-/** Board */
-export const fetchBoardDetailsAPI = async (boardId) => {
-  const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
-  // Lưu ý: axios sẽ trả về kết quả property của nó là data
-  return response.data
-}
+/** Board đã move vào redux */
+// export const fetchBoardDetailsAPI = async (boardId) => {
+//   const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
+//   // Lưu ý: axios sẽ trả về kết quả property của nó là data
+//   return response.data
+// }
 
 /** Update ColumnOrderedIds  */
 export const updateBoardDetailsAPI = async (boardId, updateData) => {

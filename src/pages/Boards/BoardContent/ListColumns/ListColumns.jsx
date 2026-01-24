@@ -7,16 +7,24 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { createNewColumnAPI } from '~/apis'
+import { generatePlaceHolderCard } from '~/utils/formatters'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
-
-function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
+function ListColumns({ columns }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
 
   const [openNewColumnFrom, setOpenNewColumnFrom] = useState(false)
   const toggleOpenNewColumnFrom = () => setOpenNewColumnFrom(!openNewColumnFrom)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('please enter column Title')
       return
@@ -26,14 +34,47 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
     const newColumnData = {
       title: newColumnTitle
     }
+    // Func này có nhiệm gọi APi tạo mới card và làm lại dữ liệu state Board
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id
+    })
+
     /**
-     * Gọi props function createNewColumn nằm ở component cha cao nhất (board/ _id.jsx)
-     * Lưu ý: Về sau ở học phần MERN stack Advence nâng cao học trực tiếp mình với mình thì chúng ta đưa dữ liệu Board ra ngoài Redux Global Store
-     * Và lúc này chúng ta có thể gọi luôn API ở đây là xong thày vì phải lần lượt gọi ngược lên cũng component cha phía trên.
-     * (Đối với component càng sâu thì càng khổ)
-     * - Với việc sử dụng redux như vậy thì code sẽ clean chuẩn chỉnh hơn rất nhiều.
-     */
-    createNewColumn(newColumnData)
+         * Khi tạo column mới thì nó sẽ chứa card, cần xử lý vấn đề kéo thả vào một column rỗng
+         */
+    createdColumn.cards = [generatePlaceHolderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceHolderCard(createdColumn)._id]
+
+    /**
+         * Cập nhật state board
+         * Phía FE chúng ta tự làm đúng lại state data board ( Thay vì phải gọi lại api fetchBoardDetailsAPI)
+         * Lưu ý: cách làm này phụ thuộc vào tùy lựa chọn và đặc thù dự án, có nơi thì BE sẽ hỗ trợ trả về luôn toàn bộ board dù
+         * đây có là api tạo Column hay Card đi chăng nữa => Lúc này FE sẽ nhàn hơn
+         */
+
+    /**
+         * Đoạn này sẽ dính lỗi object is not extensible bởi dù đã copy/clone ra giá trị newBoard nhưng bản chất
+         * spread operator là shallow copy/Clone, nên dính phải rule Immutability trong Redux toolkit không dùng được hàm push
+         * ( sửa giá trị mảng trực tiếp), cách đơn giản nhanh gọn nhất ở trường hợp này của chúng ta là dùng tời Deep copy/Clone
+         * toàn bộ cái Board cho dễ hiểu là code ngắn hơn
+         */
+    //const newBoard = { ...board }
+    // const newBoard = cloneDeep(board)
+    // newBoard.columns.push(createdColumn)
+    // newBoard.columnOrderIds.push(createdColumn._id)
+
+    /**
+         * Ngoài ra có một cách nữa là vẫn có thể dùng array.concat thay cho push như docs của Redux ToolKit ở trên vì
+         * push như đã nói nó sẽ thay đổi giá trị mảng trực tiếp, còn thằng concat thì nó chỉ merge - ghép mảng lại
+         * và tạo ra một mảng mới để chúng ta gán lại giá trị nên không vấn đề gì.
+         */
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.concat([createdColumn])
+    newBoard.columnOrderIds = newBoard.columnOrderIds.concat([createdColumn._id])
+
+    // Cập nhập dữ liệu Board vào trong Redux store
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // Đóng lại trạng thái thêm column mới và clear Input
     toggleOpenNewColumnFrom()
@@ -50,12 +91,8 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track': { m :2 }
       }}>
-        {columns?.map(column => <Colunm
-          key={column._id}
-          column={column}
-          createNewCard={createNewCard}
-          deleteColumnDetails={deleteColumnDetails}
-        />)}
+        {columns?.map(column =>
+          <Colunm key={column._id} column={column} />)}
         {/* { Add New Column } */}
         {!openNewColumnFrom
           ? <Box onClick={toggleOpenNewColumnFrom} sx={{
