@@ -15,20 +15,24 @@ import 'react-toastify/dist/ReactToastify.css'
 // Cấu hình redux Store
 import { Provider } from 'react-redux'
 import { store } from '~/redux/store'
+// Cầu hình react-router-dom với BrowserRouter
+import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store} >
-    <CssVarsProvider theme={theme}>
-      <ConfirmProvider defaultOptions={{
-        allowClose: false,
-        dialogProps: { maxWidth: 'xs' },
-        confirmationButtonProps: { color: 'secondary', variant:'outlined' },
-        cancellationButtonProps: { color:'inherit' }
-      }} >
-        <CssBaseline />
-        <App />
-        <ToastContainer position="bottom-left"theme="colored" />
-      </ConfirmProvider>
-    </CssVarsProvider>
-  </Provider>
+  <BrowserRouter basename='/' >
+    <Provider store={store} >
+      <CssVarsProvider theme={theme}>
+        <ConfirmProvider defaultOptions={{
+          allowClose: false,
+          dialogProps: { maxWidth: 'xs' },
+          confirmationButtonProps: { color: 'secondary', variant:'outlined' },
+          cancellationButtonProps: { color:'inherit' }
+        }} >
+          <CssBaseline />
+          <App />
+          <ToastContainer position="bottom-left"theme="colored" />
+        </ConfirmProvider>
+      </CssVarsProvider>
+    </Provider>
+  </BrowserRouter>
 )
