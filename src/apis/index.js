@@ -1,4 +1,4 @@
-import axios from 'axios'
+import authorizeAxiosInstance from '~/utils/authozizeAxios'
 import { API_ROOT } from '~/utils/constants'
 
 /**
@@ -18,14 +18,14 @@ import { API_ROOT } from '~/utils/constants'
 
 /** Update ColumnOrderedIds  */
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
   return response.data
 }
 
 /** Update  moveCardToDifferentColumnAPI */
 export const moveCardToDifferentColumnAPI = async (updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData)
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData)
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
   return response.data
 }
@@ -34,7 +34,7 @@ export const moveCardToDifferentColumnAPI = async (updateData) => {
 /** Columns */
 
 export const createNewColumnAPI = async (newColumnData) => {
-  const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData)
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/columns`, newColumnData)
   return response.data
 }
 
@@ -42,14 +42,14 @@ export const createNewColumnAPI = async (newColumnData) => {
 /** Columns updateColumnDetailsAPI */
 
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
   return response.data
 }
 
 /** Columns deleteColumnDetails */
 export const deleteColumnDetailsAPI = async (columnId) => {
-  const response = await axios.delete(`${API_ROOT}/v1/columns/${columnId}`)
+  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/columns/${columnId}`)
   // Lưu ý: axios sẽ trả về kết quả property của nó là data
   return response.data
 }
@@ -58,6 +58,6 @@ export const deleteColumnDetailsAPI = async (columnId) => {
 /** Card */
 
 export const createNewCardAPI = async (newCardData) => {
-  const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData)
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/cards`, newCardData)
   return response.data
 }

@@ -18,16 +18,16 @@ import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
   PASSWORD_RULE,
-  PASSWORD_RULE_MESSAGE,
-  PASSWORD_CONFIRMATION_MESSAGE
+  PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
   const submitLogIn = (data) => {
-  console.log('🚀 ~ submitLogIn ~ data:', data)
+    console.log('🚀 ~ submitLogIn ~ submitLogIn:', submitLogIn)
   }
+  
 
   return (
     <form onSubmit={handleSubmit(submitLogIn)}>
@@ -97,6 +97,7 @@ function LoginForm() {
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
+              className="interceptor-loading"
               type="submit"
               variant="contained"
               color="primary"
