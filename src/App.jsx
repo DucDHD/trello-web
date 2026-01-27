@@ -14,7 +14,6 @@ import { selectCurrentUser } from '~/redux/user/userSlice'
  * https://www.robinwieruch.de/react-router-private-routes/
  */
 const ProtectedRoute = ({ user }) => {
-  console.log(user)
   if (!user) return <Navigate to='/login' replace={true} />
   return <Outlet />
 }
