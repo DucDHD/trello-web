@@ -6,7 +6,7 @@ import Auth from '~/pages/Auth/Auth'
 import AccountVerificaion from '~/pages/Auth/AccountVerificaion'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
-
+import  Settings from '~/pages/Settings/Settings'
 /**
  * Giải pháp Clean code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
  * Sử dụng <Outlet /> của react-router-dom để hiển thị các Child Route (Xem cách sử dụng trong App() bên dưới)
@@ -36,6 +36,9 @@ function App() {
         {/** <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
         {/* { Board Detail } */}
         <Route path='/boards/:boardId' element={ <Board />} />
+        {/** User Settings */}
+        <Route path='/settings/account' element={ <Settings /> } />
+        <Route path='/settings/security' element={<Settings />} />
       </Route>
 
       <Route path='/login' element={ <Auth />} />
