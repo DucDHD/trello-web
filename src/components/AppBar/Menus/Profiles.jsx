@@ -53,7 +53,7 @@ function Profile() {
           <Avatar
             sx={{ width: 36, height: 36 }}
             alt="DucDH"
-            src={currentUser?.Avatar}
+            src={currentUser?.avatar}
           />
         </IconButton>
       </Tooltip>
