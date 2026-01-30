@@ -30,7 +30,7 @@ function App() {
          * Thực hành dễ hiểu hơn bằng cách nhần Go Home từ trang 404 xong thử quay lại bằng nút back của trình duyệt
          * giữa 2 trường hợp có replace hoặc không
          */
-        <Navigate to="boards/696f298f0d7fe9c172b118d9" replace={true} />
+        <Navigate to="boards" replace={true} />
       } />
       {/** Protected Route ( Hiểu đơn giản trong dự án của chúng ta là những route chỉ cho truy cập sau khi đã login) */}
       <Route element={<ProtectedRoute user={currentUser} />} >
