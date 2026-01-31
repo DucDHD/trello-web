@@ -2,6 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { activeBoardReducer } from './activeBoard/activeBoardSlice'
 import { userReducer } from './user/userSlice'
+import { activeCardReducer } from './activeCard/activeCardSlice'
 /**
  * Cấu hình redux-persist
  * https://www.npmjs.com/package/redux-persist
@@ -16,14 +17,15 @@ import storage from 'redux-persist/lib/storage' // defaul là localstorage
 const rootPersistConfig = {
   key: 'root', // Key của cái persist do chúng ta chỉ định, cứ để mặc định là root
   storage: storage, // Biến của storage ở trên -  lưu vào localstorage
-  whilelish: ['user'] // Định nghĩa của các slice dữ liệu được phép duy trì qua mỗi lần F5 trình duyệt
-  // backlist : ['user'] // Định nghĩa các slice không được phép duy trì qua mỗi lần F5 trình duyệt
+  whitelist: ['user'], // Định nghĩa của các slice dữ liệu được phép duy trì qua mỗi lần F5 trình duyệt
+  blacklist : ['activeCard'] // Định nghĩa các slice không được phép duy trì qua mỗi lần F5 trình duyệt
 }
 
 // combine các reducers trong dự án của chúng ta ở đây
 const reducers = combineReducers({
   activeBoard: activeBoardReducer,
-  user: userReducer
+  user: userReducer,
+  activeCard: activeCardReducer
 })
 
 // thực hiện persist Reducer
