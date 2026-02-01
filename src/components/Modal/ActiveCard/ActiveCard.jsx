@@ -38,6 +38,7 @@ import {
   clearCurrentActiveCard,
   selectCurrentActiveCard
 } from '~/redux/activeCard/activeCardSlice'
+import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 
 import { updateCardDetailAPI } from '~/apis'
 
@@ -81,6 +82,8 @@ function ActiveCard() {
     // B1: cập nhập lại cái card đang active trong modal hiện tại
     dispatch(updateCurrentActiveCard(updatedCard))
     // B2: Cập nhập lại bản ghi card trong cái activeBoard (nested data)
+    dispatch(updateCardInBoard(updatedCard))
+
 
     return updatedCard
   }
@@ -89,6 +92,11 @@ function ActiveCard() {
     // Gọi API...
     callApiUpdateCard({ title: newTitle.trim() })
   }
+  const onUpdateCardDescription = (newDescription) => {
+    // Gọi API...
+    callApiUpdateCard({ description: newDescription })
+  }
+
 
   const onUploadCardCover = (event) => {
     console.log(event.target?.files[0])
@@ -101,8 +109,11 @@ function ActiveCard() {
     reqData.append('cardCover', event.target?.files[0])
 
     // Gọi API...
+    toast.promise(
+      callApiUpdateCard(reqData).finally(() => event.target.value = ''),
+      { pending: 'Updating...' }
+    )
   }
-
   return (
     <Modal
       disableScrollLock
@@ -167,7 +178,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
