@@ -22,7 +22,7 @@ import {
 } from '~/redux/Notifications/notificationsSlice'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
-import { socketIoInstance } from '~/main'
+import { socketIoInstance } from '~/socketClient'
 
 
 const BOARD_INVITATION_STATUS = {
