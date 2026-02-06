@@ -19,6 +19,7 @@ import Notifications from './Notifications/Notifications'
 import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 
 function AppBar() {
+
   const [searchValue, setSearchValue] = useState('')
   return (
     <Box sx={{

@@ -31,7 +31,7 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }) {
    * Vì thế dựa vào mảng board.FE_allUsers card.memberIds rồi chúng ta tạo ra một mảng FE_cardMembers chứa đủ thông tin của user để hiển thị ra 
    * ngoài giao diện, bới mặc định trong card thì lưu đám Id của user thôi
    */
-  const FE_CardMembers = board.FE_allUsers?.filter(user => cardMemberIds.includes(user._id))
+  //const FE_CardMembers = board.FE_allUsers?.filter(user => cardMemberIds.includes(user._id))
   const FE_CardMembers_order = cardMemberIds.map( id => {
     return board.FE_allUsers.find(u => u._id === id)
   })
